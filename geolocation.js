@@ -8,9 +8,9 @@ window.addEventListener('DOMContentLoaded', (function(){
 		++testNum;
 		let mssg = 'test numero ' + testNum;
 		if(message){
-			mssg + ' --> ' + '"'+ message +'"';
+			mssg = mssg + ' --> ' + '"'+ message +'"';
 		}
-		console.log(mssg)
+		console.log(mssg);
 	}
 
 	// Defines a common namespace
@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', (function(){
 		/************** METHODS ***********/
 
 		// Display an OSM Map with positions markers
-
+/*
 		showOSMMap : function(){
 		    var positionsList = [] ;
 		    
@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', (function(){
 			// Initializes a OSM Map with options
 			var map = L.map(urban.mapContainer.id).setView(positionsList[0], 15);
 			urban.mapContainer.classList.add("map");
-			// Loads the OSM tileLayer (map background) */
+			// Loads the OSM tileLayer (map background) 
 			L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 				maxzoom:19,
 				attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -59,11 +59,77 @@ window.addEventListener('DOMContentLoaded', (function(){
 			}
 			return true;
 		},
+*/
+		showOSMMapBis : function(){
+			
+			var positionFocus = [];
+			var inputAdresse = "1 avenue Victor Hugo";
+			var postCode = "69160";
+			var map ;
+
+			inputAdresse = inputAdresse.replace(/ /g, "+");
+			var adress = "https://api-adresse.data.gouv.fr/search/?q="+inputAdresse+"&postcode="+postCode;
+
+			function setOSMMap(coordinates = [4.8325000, 45.7577000]){
+				// Reverse the order of the array containing the coordinates to put the latitude at index 0 and longitude at index 1
+				coordinates.reverse();
+
+				// Initializes a OSM Map with options
+				map = L.map(urban.mapContainer.id).setView(coordinates, 15);
+				urban.mapContainer.classList.add("map");
+				// Loads the OSM tileLayer (map background) */
+				L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+					maxzoom:19,
+					attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+				}).addTo(map);
+				// Add a marker to the identified position onto the map
+					L.marker(coordinates).addTo(map);
+			}
+
+			if(!window.fetch){ // if the navigator supports fetch API, then it uses it
+				fetch(adress)
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(json){
+					let positionFocus = json.features[0].geometry.coordinates ;
+					setOSMMap(positionFocus);
+				})
+				.catch(function(error){
+					// console.log(error);
+				});
+				return;
+			} else{ // if the navigator does not support fetch API, then it uses XHR method
+				var request = new XMLHttpRequest();
+				request.open('GET', adress, true);
+				request.onload = function() {
+					if (this.status >= 200 && this.status < 400) {
+				    	let data = JSON.parse(this.response);
+				    	let positionFocus = data.features[0].geometry.coordinates ;
+						setOSMMap(positionFocus);
+					} else {
+				    test('The target server has been reached, but it returned an error');
+				  	}
+				};
+				request.onerror = function() {
+				  	// console.log('There was a connection error of some sort');
+				};
+				request.send();
+				return;
+			}
+		},
 
 
 		/********** Functions to get the visitor's current position *********/
 
 		// If the user clicks on the page before answer to the ageolocation authorisation prompt, the cursor change to normal appeareance
+/*
+if(navigator.geolocation){
+		} else {
+		test("pas de fonction de geolocalisation dans le navigateur");
+		return false;
+}
+
 
 		noUserAnswer : function (){
 			urban.body.style.cursor = "initial";
@@ -125,9 +191,8 @@ window.addEventListener('DOMContentLoaded', (function(){
 			urban.geolocationSuccess = false ;
 			urban.body.style.cursor = "initial";
 		},
-
+/*
 		getMemberPosition : function(currentPosition){
-			
 			if(!currentPosition){
 				return false;
 			}
@@ -143,7 +208,6 @@ window.addEventListener('DOMContentLoaded', (function(){
 				return false ;
 			}
 		},
-
 		geolocErrorMessage : function(errorMessage){
 			if(document.getElementById('errorGeolocMessage')){
 				return;
@@ -156,11 +220,12 @@ window.addEventListener('DOMContentLoaded', (function(){
 			urban.mapContainer.append(errorGeolocMessage);
 		},
 
+*/
 
 		/****************MAP DISPLAYER***********/
 
 		/* Display an OSM map with the current position if the geolocation succeeds and if the accuracy is important enough */
-		showCurrentPosition : function(){
+/*		showCurrentPosition : function(){
 			urban.getCurrentPosition();
 			urban.mapTrigger.style.dislay = "none";
 			// Remove any existing geolocation fail notice
@@ -172,10 +237,10 @@ window.addEventListener('DOMContentLoaded', (function(){
 				setGeoDataIntoForm();
 			}
 		},
-
+*/
 
 		/***** COORDINATES FORM FILLER ********/
-
+/*
 		setGeoDataIntoForm : function(){
 			var useCurrentPositionButton;
 			let memberPosition ;
@@ -214,13 +279,17 @@ window.addEventListener('DOMContentLoaded', (function(){
 				}
 			}), 1000);
 		}
-	}
+*/
+	};
 
 	/****************** MAIN CODE ****************************/
-	test();
-	if(urban.mapTrigger != null && urban.mapTrigger != undefined){
-	urban.mapTrigger.addEventListener('click',urban.showCurrentPosition);
+	if(urban.mapTrigger){
+		//urban.mapTrigger.addEventListener('click',urban.showCurrentPosition);
+
+		urban.mapTrigger.addEventListener('click',urban.showOSMMapBis);
 	}
+	
+
 }));
 
 		
