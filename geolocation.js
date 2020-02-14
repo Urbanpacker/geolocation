@@ -60,31 +60,52 @@ window.addEventListener('DOMContentLoaded', (function(){
 			return true;
 		},
 */
-		showOSMMapBis : function(){
+		setOSMMap : (coords, zoomPoint = null) => {
+			if(!coords.isArray && coords.length < 1){
+				return false ;
+			}
+			
+			// Checks that no map has already been set in the container
+			var mapPresent = document.querySelectorAll("#"+urban.mapContainer.id+".leaflet-container");
+
+			if(mapPresent.length > 0){
+				return false;
+			}
+			
+			// If no zoomPoint has been defined, by default the map will zoom on the first spot of the input list
+			if(!zoomPoint){
+				var coordsArray = [] ;
+				coordsArray[0] = coords[0].lat; 
+				coordsArray[1] = coords[0].long; 
+			}
+			
+			// Initializes a OSM Map with options
+			var map = L.map(urban.mapContainer.id).setView(coordsArray, 15);
+			urban.mapContainer.classList.add("map");
+			// Loads the OSM tileLayer (map background) */
+			
+			L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+				maxzoom:19,
+				attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+			}).addTo(map);
+			
+			// Add a marker to each spot onto the map
+			coords.forEach((el, i, arr)=>{
+				L.marker([el.lat,el.long]).addTo(map);
+			});
+			return true ;
+		},
+
+		showOSMMapBis : function(coords){
 			
 			var positionFocus = [];
-			var inputAdresse = "1 avenue Victor Hugo";
-			var postCode = "69160";
+			var inputAdresse = "2 place bellecour";
+			var postCode = "69002";
 			var map ;
 
 			inputAdresse = inputAdresse.replace(/ /g, "+");
 			var adress = "https://api-adresse.data.gouv.fr/search/?q="+inputAdresse+"&postcode="+postCode;
 
-			function setOSMMap(coordinates = [4.8325000, 45.7577000]){
-				// Reverse the order of the array containing the coordinates to put the latitude at index 0 and longitude at index 1
-				coordinates.reverse();
-
-				// Initializes a OSM Map with options
-				map = L.map(urban.mapContainer.id).setView(coordinates, 15);
-				urban.mapContainer.classList.add("map");
-				// Loads the OSM tileLayer (map background) */
-				L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-					maxzoom:19,
-					attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-				}).addTo(map);
-				// Add a marker to the identified position onto the map
-					L.marker(coordinates).addTo(map);
-			}
 
 			if(!window.fetch){ // if the navigator supports fetch API, then it uses it
 				fetch(adress)
@@ -112,7 +133,7 @@ window.addEventListener('DOMContentLoaded', (function(){
 				  	}
 				};
 				request.onerror = function() {
-				  	// console.log('There was a connection error of some sort');
+				  	console.log('There was a connection error of some sort');
 				};
 				request.send();
 				return;
@@ -286,7 +307,12 @@ if(navigator.geolocation){
 	if(urban.mapTrigger){
 		//urban.mapTrigger.addEventListener('click',urban.showCurrentPosition);
 
-		urban.mapTrigger.addEventListener('click',urban.showOSMMapBis);
+		urban.mapTrigger.addEventListener('click', e => {
+				// urban.showOSMMapBis(); ;
+				let coords = [{long : 4.8325000, lat : 45.7577000}];
+				urban.setOSMMap(coords);
+			}
+		);
 	}
 	
 
