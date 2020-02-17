@@ -1,0 +1,10 @@
+commit b77d619fe374011937adb90d4f637bc086cf503d
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Mon Feb 17 18:00:39 2020 +0100
+
+    Nettoyage du fichier des scripts obsolètes et ajout d'un contrôle de données avant de fixer le zoom de la map
+
+commit 6123f68e4d74d859bf3301d3839ae20d39f974ec
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Mon Feb 17 13:54:51 2020 +0100
+
