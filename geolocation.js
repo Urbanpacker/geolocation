@@ -14,48 +14,36 @@ window.addEventListener('DOMContentLoaded', (function(){
 	}
 */
 
-	class UrbanMap {
-		constructor(mapContainer, mapTrigger, adress, postCode){
-
-			this.mapContainer = document.getElementById(mapContainer) ;
-			this.body = document.body;
-			this.mapTrigger = document.getElementById(mapTrigger);
-
-			this.adress = adress;
-			this.postCode = postCode;
-			this.coords = [];
-			this.zoomPoint = [];
+	class SingleLocation{
+		constructor(data){
+			this.adress = data.adress;
+			this.postCode = data.postCode;
+			this.lat = data.lat ;
+			this.lg = data.lg ;
 			
-			this.minGeolocAccuracy = 0 ;
-		
 			/************** METHODS ***********/
 
 			this.getCoordsFromAdress = () => {
-				
-				var inputAdress = this.adress;
 				var postCode = this.postCode;
-				var map ;
-
-				inputAdress = inputAdress.replace(/ /g, "+");
-				var adress = "https://api-adresse.data.gouv.fr/search/?q="+inputAdress+"&postcode="+postCode;
+				var inputAdress = this.adress.replace(/ /g, "+");
+				
+				var url = "https://api-adresse.data.gouv.fr/search/?q="+inputAdress+"&postcode="+postCode;
 
 				let self = this;
-				if(window.fetch){ // if the navigator supports fetch API, then it uses it
-					fetch(adress)
-					.then(function(response) {
+				if(window.fetch){ // if the navigator supports the relatively recent fetch API
+					fetch(url)
+					.then(function(response){
 						return response.json();
 					})
 					.then(function(data){
-						self.coords.push({
-					    	lg : data.features[0].geometry.coordinates[0],
-					    	lat : data.features[0].geometry.coordinates[1]
-					    });
+						self.lg = data.features[0].geometry.coordinates[0],
+					    self.lat = data.features[0].geometry.coordinates[1]
 					})
 					.catch(function(error){
 						console.log(error);
 					});
 					return;
-				} else{ // if the navigator does not support fetch API, then it uses XHR method
+				} else{ // if the navigator does not support fetch API, then it uses traditionnal XHR method
 					var request = new XMLHttpRequest();
 					request.open('GET', adress, true);
 					request.onload = function() {
@@ -76,7 +64,35 @@ window.addEventListener('DOMContentLoaded', (function(){
 					return;
 				}
 			}
+		}
+	}
+
+
+	class UrbanMap {
+		constructor(mapContainer, mapTrigger){
+			this.mapContainer = document.getElementById(mapContainer) ;
+			this.mapTrigger = document.getElementById(mapTrigger);
+			this.minGeolocAccuracy;
+			this.zoomPoint;
+			this.coords;
+		
+			/************** METHODS ***********/
+
+			this.setMinGeolocAccuracy = (minGeolocAccuracy) =>{
+				this.minGeolocAccuracy = minGeolocAccuracy ;
+			} 
+
+			this.setCoords = (coords) => {
+				this.coords = coords ;
+				this.zoomPoint = [this.coords[0].lat, this.coords[0].lg];
+			}
+
 			this.setOSMMap = () => {
+
+				if(!maptest.mapContainer){
+					return;
+				}
+
 				// Checks that no map has already been set in the container
 				if(this.mapContainer.hasChildNodes()){
 					let el = this.mapContainer.childNodes ;
@@ -87,7 +103,6 @@ window.addEventListener('DOMContentLoaded', (function(){
 					}
 				}
 
-				var coords = this.coords;
 				if(!Array.isArray(coords) || coords.length <1){
 					return false ;
 				}
@@ -102,13 +117,11 @@ window.addEventListener('DOMContentLoaded', (function(){
 				// Initializes a OSM Map with options
 				var map = L.map(this.mapContainer.id).setView(this.zoomPoint, 15);
 					this.mapContainer.classList.add("map");
-				
 				// Loads the OSM tileLayer (map background) */
 				L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 					maxzoom:19,
 					attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
 				}).addTo(map);
-				
 				// Add a marker to each spot onto the map
 				coords.forEach((el, i, arr)=>{
 					L.marker([el.lat,el.lg]).addTo(map);
@@ -118,21 +131,41 @@ window.addEventListener('DOMContentLoaded', (function(){
 		}
 	}
 
-var maptest = new UrbanMap('mapContainer', 'mapTrigger', '16 quai du commerce', '69009');
+var persons = [
+	{
+		adress : "16 place Bellecour",
+		postCode : "69002"
+	},
+	{
+		adress : "10 place Vauboin",
+		postCode : "69160"
+	},
+	{
+		adress : "50 rue de la République",
+		postCode : "69002"
+	},
+	{
+		adress : "14 cours Charlemagne",
+		postCode : "69002"
+	}
+]
 
-maptest.getCoordsFromAdress();
-//.then(
-maptest.setOSMMap(maptest.coords);
-//	).catch(console.log("echec"));
+var coords = [];
 
-if(maptest.mapTrigger){
-	maptest.mapTrigger.addEventListener('click', e => {
-		// urban.showOSMMapBis(); ;
-	//	let coords = [{long : 4.8325000, lat : 45.7577000}];
-		maptest.setOSMMap();
-		}
-	);
-}
+	for(let i = 0, c = persons.length ; i < c ; ++i){
+		coords.push(new SingleLocation(persons[i]));
+		coords[i].getCoordsFromAdress();	
+	}
+
+
+var maptest = new UrbanMap('mapContainer', 'mapTrigger');
+
+
+maptest.mapTrigger.addEventListener('click', e => {
+	maptest.setCoords(coords);
+	maptest.setOSMMap(coords);
+});
+	
 
 
 /*****************************************************
