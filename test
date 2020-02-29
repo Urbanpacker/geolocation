@@ -1,6 +1,12 @@
-commit b77d619fe374011937adb90d4f637bc086cf503d
+commit 285b40ffe39a17c01d88e3dcef3d944dc4bf9c2e
 Author: Urbanpacker <dev@urbanities.fr>
-Date:   Mon Feb 17 18:00:39 2020 +0100
+Date:   Sat Feb 29 21:02:55 2020 +0100
+
+    Création d'un formulaire permettant de générer un carte avec un marqueur suite à la saisie d'une adresse et d'un code postal
+
+commit e2a60d48a4b4e67e35e42d298691fbecc2c0bbab
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Mon Feb 17 18:11:07 2020 +0100
 
     Nettoyage du fichier des scripts obsolètes et ajout d'un contrôle de données avant de fixer le zoom de la map
 
@@ -8,3 +14,40 @@ commit 6123f68e4d74d859bf3301d3839ae20d39f974ec
 Author: Urbanpacker <dev@urbanities.fr>
 Date:   Mon Feb 17 13:54:51 2020 +0100
 
+    Separation de la recuperation des adresses et de la  construction d'une carte OSM dans deux classes distinctes
+
+commit 1421c81ef9dee25019af75b479e918aadd7dd409
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Mon Feb 17 12:07:57 2020 +0100
+
+    Creation d'une classe pour la recuperation d'adresses sur API adresses.data.gouv et pour la creation d'une carte OSM
+
+commit cf973988d7cdf759d2b5a65da224f8f89f6969a6
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Fri Feb 14 12:27:37 2020 +0100
+
+    Creation d'une fonction de creation d'un fond de carte OSM avec pointeur sur des coordonnées entrées en parametres
+
+commit 7856495794c54fcb87ab4dcc1acd9ac978af1276
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Wed Feb 12 18:12:53 2020 +0100
+
+    Developpement d'un module d'affichage d'une carte OSM via la saisie d'une adresse et d'un code postal
+
+commit 7f2cf8f0afb0711347a14d7db2dfb94df8fa2717
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Wed Feb 12 15:44:38 2020 +0100
+
+    Rangement de toutes les données et fonctions de geolocation.js dan sune objet JSON servant de namespace
+
+commit ae83a55438ee8493ec83f453ee862cdf094f64f6
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Wed Feb 12 15:43:01 2020 +0100
+
+    Ajout fichier html et fichiers connexes JS pour developpement du module de geolocalisation
+
+commit c86597c4973dcd110edc7785ff3187ba191726b1
+Author: Urbanpacker <dev@urbanities.fr>
+Date:   Wed Feb 12 10:49:20 2020 +0100
+
+    first commit
