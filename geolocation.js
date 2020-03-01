@@ -61,7 +61,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			this.mapContainer = document.getElementById(mapContainer) ;
 			this.mapTrigger = document.getElementById(mapTrigger);
 			this.minGeolocAccuracy;
-<<<<<<< HEAD
 			this.zoomPoint = [];
 			this.coords = {};
 			this.coords.lat = lat;
@@ -118,8 +117,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
 					maxzoom:19,
 					attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
 				}).addTo(this.leafletMap);
-<<<<<<< HEAD
-
 			}
 		}
 	}
@@ -154,10 +151,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
 					});
 				}
 			}
-		}
-	}
 
-	/****************** MAIN CODE ****************************/
+/****************** MAIN CODE ****************************/
 	const mapContainer = document.getElementById("mapContainer");
 	const mapTrigger = document.getElementById("mapTrigger");
 
@@ -220,10 +215,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
 });
 
-
-
-
-	
 /*
 	var coords = [];
 
@@ -410,89 +401,3 @@ if(navigator.geolocation){
 
 //				let coords = [{long : 4.8325000, lat : 45.7577000}];
 
-	
-
-<<<<<<< HEAD
-
-=======
-	/****************** MAIN CODE ****************************/
-	
-	const mapContainer = document.getElementById("mapContainer");
-	const mapTrigger = document.getElementById("mapTrigger");
-
-
-	if(mapContainer && mapTrigger){
-		//urban.mapTrigger.addEventListener('click',urban.showCurrentPosition);
-
-		mapTrigger.addEventListener('click', e => {
-			e.preventDefault();
-			// urban.showOSMMapBis();
-			let adress = document.forms[0].elements["adress"].value ;
-			let postcode = document.forms[0].elements["postcode"].value ;
-			
-			if(!adress || !postcode){return false;}
-
-			const emplacement = new SingleLocation({"adress" : adress, "postCode" : postcode});
-
-			emplacement.getCoordsFromAdress();
-			// While the datagouv.adresses API is searching for the coordinates from the adress...
-
-			var numberOfAttempt = 0 ;
-			var maxAttempts = 10 ;
-			var intervalId = window.setInterval(()=>{
-				if(emplacement.lat && emplacement.lg){
-					window.clearInterval(intervalId);
-					console.log("Coordonnées récupérées");
-					console.log("La lat est "+emplacement.lat);
-					console.log("La long est "+emplacement.lg);
-					console.log("L'adresse est "+emplacement.adress);
-					console.log("Le code postal est "+emplacement.postCode);
-				}
-				else if(numberOfAttempt > maxAttempts){
-					window.clearInterval(intervalId);
-					console.log("impossible de récupérer les coordonnées, veuillez réessayer plus tard");
-				}
-				++numberOfAttempt;
-			}, 100);		
-		
-		
-			setTimeout(()=>{
-				const myMap = new UrbanMap("mapContainer", "mapTrigger");
-			}, 500);
-			
-		});
-
-
-	}
-//				let coords = [{long : 4.8325000, lat : 45.7577000}];
-
-	
-
-});
-
-
-
->>>>>>> 285b40ffe39a17c01d88e3dcef3d944dc4bf9c2e
-			var persons = [
-		{
-			adress : "16 place Bellecour",
-			postCode : "69002"
-		},
-		{
-			adress : "10 place Vauboin",
-			postCode : "69160"
-		},
-		{
-			adress : "50 rue de la République",
-			postCode : "69002"
-		},
-		{
-			adress : "14 cours Charlemagne",
-			postCode : "69002"
-		}
-<<<<<<< HEAD
-	];
-*/
-=======
-	];
->>>>>>> 285b40ffe39a17c01d88e3dcef3d944dc4bf9c2e
