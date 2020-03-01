@@ -56,48 +56,30 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		}
 	}
 
-
 	class UrbanMap {
-		constructor(mapContainer, mapTrigger){
+		constructor(mapContainer, mapTrigger, lat, lg){
 			this.mapContainer = document.getElementById(mapContainer) ;
 			this.mapTrigger = document.getElementById(mapTrigger);
 			this.minGeolocAccuracy;
+<<<<<<< HEAD
 			this.zoomPoint = [];
 			this.coords = {};
+			this.coords.lat = lat;
+			this.coords.lg = lg;
 			this.leafletMap;
+		
+			if(this.coords.lat && this.coords.lg){
+				this.zoomPoint = [this.coords.lat, this.coords.lg];
+			} else{
+				this.zoomPoint = null;
+			}
 		
 			/************** METHODS ***********/
 
-			this.checkCoordsFormat = () => {
-				if(!Array.isArray(this.coords) || (this.coords.length <1)){
-					console.log("Les coordonnées doivent être sous forme de tableau d'objets de la forme : [{lat : value, lg : value}, {}...]");
-					return false
-				} else {
-					console.log("Format de cordonnées ok");
-
-					return true;
-				}
-			}
-
 			this.setMinGeolocAccuracy = (minGeolocAccuracy)=>{
-				this.minGeolocAccuracy = minGeolocAccuracy ;
+				this.minGeolocAccuracy = minGeolocAccuracy;
 			} 
-
-			this.setCoordsAndZoomPoint = (coords) => {
-				if(coords){
-
-					this.coords.lat = coords.lat ;
-					this.coords.lg = coords.lg ;
-					if(!this.zoomPoint){
-						if(this.coords.lat && this.coords.lg){
-							this.zoomPoint = [this.coords.lat, this.coords.lg];
-						} else {
-							this.zoomPoint = null;
-						}
-					}
-				}
-			}
-
+		
 			this.setOSMMap = () => {
 				if(!this.mapContainer){
 					console.log("Pas de conteneur défini pour la carte")
@@ -123,8 +105,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
 				// If no zoomPoint has been defined, by default the map will zoom on the first spot of the input list
 				if(!Array.isArray(this.zoomPoint) || this.zoomPoint.length === 0){
 					this.zoomPoint = [];
-					this.zoomPoint[0] = this.coords.lat; 
-					this.zoomPoint[1] = this.coords.lg; 
+					this.zoomPoint[0] = this.coords[0].lat; 
+					this.zoomPoint[1] = this.coords[0].lg; 
 				}
 
 				console.log(this);
@@ -136,23 +118,112 @@ window.addEventListener('DOMContentLoaded', ()=>{
 					maxzoom:19,
 					attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
 				}).addTo(this.leafletMap);
-				
-			}
+<<<<<<< HEAD
 
-			// Add a marker to each spot onto the map
-			this.setMarkers = (coords) => {
-				if(!coords || !Array.isArray(coords)){
-					console.log("Mauvaises coordonnées");
-					return
-				}
-				coords.forEach((el, i, arr)=>{
-					if(el.lat && el.lg){
-						L.marker([el.lat,el.lg]).addTo(this.leafletMap);
-					}
-				});
 			}
 		}
 	}
+
+	class Marker{
+		constructor(coords, currentMap){
+			this.coords = coords;
+			this.Lmap = currentMap ;
+
+			this.checkCoordsFormat = () => {
+				if(!Array.isArray(this.coords) || (this.coords.length <1)){
+					console.log("Les coordonnées doivent être sous forme de tableau d'objets de la forme : [{lat : value, lg : value}, {}...]");
+					return false;
+				} else {
+					console.log("Format de cordonnées ok");
+					return true;
+				}
+			}
+
+			// Add a marker to each spot onto the map
+			this.setMarkers = () => {
+				if(!this.checkCoordsFormat()){
+					return ;
+				} else if(!this.Lmap) {
+					console.log("Aucune carte indiquée");
+					return
+				} else{
+					this.coords.forEach((el, i, arr)=>{
+						if(el.lat && el.lg){
+							L.marker([el.lat,el.lg]).addTo(this.Lmap.leafletMap);
+						}
+					});
+				}
+			}
+		}
+	}
+
+	/****************** MAIN CODE ****************************/
+	const mapContainer = document.getElementById("mapContainer");
+	const mapTrigger = document.getElementById("mapTrigger");
+
+
+	if(mapContainer && mapTrigger){
+		//urban.mapTrigger.addEventListener('click',urban.showCurrentPosition);
+
+		mapTrigger.addEventListener('click', e => {
+			e.preventDefault();
+			// urban.showOSMMapBis();
+			let adress = document.forms[0].elements["adress"].value ;
+			let postcode = document.forms[0].elements["postcode"].value ;
+			
+			if(!adress || !postcode){return false;}
+
+			const emplacement = new SingleLocation({"adress" : adress, "postCode" : postcode});
+
+			emplacement.getCoordsFromAdress();
+			// While the datagouv.adresses API is searching for the coordinates from the adress...
+
+			var numberOfAttempt = 0 ;
+			var maxAttempts = 10 ;
+	/*		var intervalId = window.setInterval(()=>{
+				if(emplacement.lat && emplacement.lg){
+					window.clearInterval(intervalId);
+					console.log("Coordonnées récupérées");
+					console.log("La lat est "+emplacement.lat);
+					console.log("La long est "+emplacement.lg);
+					console.log("L'adresse est "+emplacement.adress);
+					console.log("Le code postal est "+emplacement.postCode);
+				}
+				else if(numberOfAttempt > maxAttempts){
+					window.clearInterval(intervalId);
+					console.log("impossible de récupérer les coordonnées, veuillez réessayer plus tard");
+				}
+				++numberOfAttempt;
+			}, 100);		
+	*/	
+		
+			setTimeout(()=>{
+				console.log(emplacement);
+
+				const myMap = new UrbanMap("mapContainer", "mapTrigger", emplacement.lat, emplacement.lg);
+				console.log(myMap);
+				myMap.setOSMMap();
+
+				let testMarker = new Marker([myMap.coords], myMap);
+				console.log(testMarker);
+				testMarker.checkCoordsFormat();
+				testMarker.setMarkers();
+
+
+			}, 2000);
+			
+		});
+
+
+	}
+//				let coords = [{long : 4.8325000, lat : 45.7577000}];
+
+});
+
+
+
+
+	
 /*
 	var coords = [];
 
@@ -335,10 +406,15 @@ if(navigator.geolocation){
 				}
 			}), 1000);
 		}
-	};
-*/
+	};*/
 
+//				let coords = [{long : 4.8325000, lat : 45.7577000}];
 
+	
+
+<<<<<<< HEAD
+
+=======
 	/****************** MAIN CODE ****************************/
 	
 	const mapContainer = document.getElementById("mapContainer");
@@ -382,12 +458,6 @@ if(navigator.geolocation){
 		
 			setTimeout(()=>{
 				const myMap = new UrbanMap("mapContainer", "mapTrigger");
-				console.log(emplacement);
-				//var bla = {emplacement.lat, emplacement.lg}
-				myMap.setCoordsAndZoomPoint(emplacement);
-				myMap.setOSMMap();
-				myMap.setMarkers([myMap.coords]);
-				console.log(myMap);
 			}, 500);
 			
 		});
@@ -402,6 +472,7 @@ if(navigator.geolocation){
 
 
 
+>>>>>>> 285b40ffe39a17c01d88e3dcef3d944dc4bf9c2e
 			var persons = [
 		{
 			adress : "16 place Bellecour",
@@ -419,4 +490,9 @@ if(navigator.geolocation){
 			adress : "14 cours Charlemagne",
 			postCode : "69002"
 		}
+<<<<<<< HEAD
 	];
+*/
+=======
+	];
+>>>>>>> 285b40ffe39a17c01d88e3dcef3d944dc4bf9c2e
