@@ -1,5 +1,13 @@
 'use strict';
 
+
+/****Bibliothèques à intégrer dans le head du document HTML ***/
+/* 
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css">
+	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+*/
+
+
 /****** Bloc conteneur de la map à intégrer dans le HTML *** /
 /* 
 	<div style="height:500px; width:80%; border : 5px black groove; margin:auto" id="mapContainer">
@@ -43,21 +51,23 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	}
 
 	class Marker{
-		constructor(coords, currentMap){
-			this.coords = coords;
+		constructor(lat, long, currentMap){
+			this.lat = lat;
+			this.long = long;
 			this.Lmap = currentMap ;
 			// Add a marker to a spot onto the map
 			this.setMarkers = () => {
-				L.marker([this.coords.lat,this.coords.long]).addTo(this.Lmap.leafletMap);
+				L.marker([this.lat,this.long]).addTo(this.Lmap.leafletMap);
 			}
 		}
 	}
 
 /****************** MAIN CODE ****************************/
+	
 	const DOMMapcontainer = document.getElementById(mapContainerId);
 	const myMap = new UrbanMap(DOMMapcontainer, lat, long);
 	myMap.setOSMMap();
-	const marker = new Marker(myMap.coords, myMap);
+	const marker = new Marker(lat, long, myMap);
 	marker.setMarkers();
 	
 });
