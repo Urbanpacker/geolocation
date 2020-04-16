@@ -151,6 +151,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
 					});
 				}
 			}
+		}
+	}
 
 /****************** MAIN CODE ****************************/
 	const mapContainer = document.getElementById("mapContainer");
