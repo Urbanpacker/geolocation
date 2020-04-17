@@ -22,26 +22,27 @@ const lat = 45.759087 ;
 const long = 4.841762 ;
 
 // Possibiité de changer le zoom de la map ci-dessous
-const zoomDegree = 25 ;
+const zoomDegree = 13.5 ;
 
+var maps = [];
 var markers = [] ;
 
 window.addEventListener('DOMContentLoaded', ()=>{
 
 
 	class SingleLocation{
-		constructor(adress, postCode, lat, long){
+		constructor(adress, postCode){
 			this.adress = adress;
 			this.postCode = postCode;
-			this.lat = lat ;
-			this.lg = long ;
+			this.lat ;
+			this.long ;
+
 			/************** METHODS ***********/
 
 			this.getCoordsFromAdress = () => {
 
-				if(!this.postCode || !this.adress){
-					return}
-
+				if(!this.postCode || !this.adress){return}
+				
 				var postCode = this.postCode;
 				var inputAdress = this.adress.replace(/ /g, "+");
 				
@@ -53,7 +54,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 						return response.json();
 					})
 					.then((data)=>{
-						this.lg = data.features[0].geometry.coordinates[0];
+						this.long = data.features[0].geometry.coordinates[0];
 					    this.lat = data.features[0].geometry.coordinates[1]
 					})
 					.catch((error)=>{
@@ -111,51 +112,28 @@ window.addEventListener('DOMContentLoaded', ()=>{
 						}
 					}
 				}
-				// Initializes a OSM Map with options
+					// Initializes a OSM Map with options
 					this.leafletMap = L.map(this.mapContainer.id).setView(this.zoomPoint, this.zoomDegree);
 					this.mapContainer.classList.add("map");
-				// Loads the OSM tileLayer (map background) */
-				L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-					maxzoom:19,
-					attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-				}).addTo(this.leafletMap);
+					// Loads the OSM tileLayer (map background) */
+					L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+						maxzoom:19,
+						attribution:'(c)<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+					}).addTo(this.leafletMap);
 			}
-		}
-	}
 
-	class Marker{
-		constructor(lat, long, currentMap){
-			this.lat = lat;
-			this.long = long;
-			this.Lmap = currentMap ;
-
-			// Add a marker to a spot onto the map
-			this.setMarker = (lat,long) => {
-			console.log(markers);				
-//		L.marker([this.lat,this.long]).addTo(this.Lmap.leafletMap);
-			
-				markers[markers.length] = {lt : this.lat, lg : this.long};
-				markers.forEach((el, i, arr)=>{
-					if(el.lt && el.lg){
-						L.marker([el.lt,el.lg]).addTo(this.Lmap.leafletMap);
-					}
-				});
-
-
+			this.setMarker = (lat = this.coords.lat, long = this.coords.long)=>{
+				L.marker([lat,long]).addTo(this.leafletMap);
 			}
 		}
 	}
 
 /****************** MAIN CODE ****************************/
 	
-/*	const DOMMapcontainer = document.getElementById(mapContainerId);
-	const myMap = new UrbanMap(DOMMapcontainer, lat, long, zoomDegree);
-	myMap.setOSMMap();
-	const marker = new Marker(lat, long, myMap);
-	marker.setMarkers();
-*/	
 	const DOMMapcontainer = document.getElementById(mapContainerId);
 	const mapTrigger = document.getElementById("mapTrigger");
+	const places = [];
+	var myMap ;
 
 	if(DOMMapcontainer && mapTrigger){
 		mapTrigger.addEventListener('click', e => {
@@ -163,18 +141,23 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			let adress = document.forms[0].elements["adress"].value ;
 			let postcode = document.forms[0].elements["postcode"].value ;
 			
-			if(!adress || !postcode){return false;}
+			if(!adress || !postcode){return}
 
-			const emplacement = new SingleLocation(adress, postcode);
-			emplacement.getCoordsFromAdress();
-			
+			places[places.length] = new SingleLocation(adress, postcode);
+
+			places[places.length-1].getCoordsFromAdress();
+
 			window.setTimeout(()=>{
-				const myMap = new UrbanMap(DOMMapcontainer, emplacement.lat, emplacement.lg, zoomDegree);
-				myMap.setOSMMap();
-				var marker = new Marker(emplacement.lat, emplacement.lg, myMap);
-
-				marker.setMarker();
-
+				if(myMap ===  undefined){
+					let lat = places[places.length-1].lat ;
+					let long = places[places.length-1].long;
+					myMap = new UrbanMap(DOMMapcontainer, lat, long, zoomDegree);
+					myMap.setOSMMap();
+					myMap.setMarker();
+				} else {
+					myMap.setMarker(places[places.length-1].lat, places[places.length-1].long);
+				}
+				console.log(places);
 			}, 2500);
 		});
 
