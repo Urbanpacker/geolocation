@@ -10,17 +10,20 @@
 		<!--- Loads Leaflet stylesheet and JS API and for the inclusion of an OSM Map -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css">
 		<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-		<script src="geolocation_insted.js"></script>
+		<script src="SingleLocationClass.js"></script>
+		<script src="UrbanMapClass.js"></script>
+		<script src="main.js"></script>
 	</head>
 
-<body>
-		<form>
+	<body>
+		<form method="post">
 			<label for="adress">Adresse</label>
 			<input name="adress" id="adress" type="text" placeholder="Tapez ici l'adresse recherchée" autofocus required >
 			<label for="postcode">Code postal</label>
 			<input name="postcode" id="postcode" type="text" placeholder="Tapez ici le code postal" autofocus required >
 			<button type="submit" id="mapTrigger">Cliquez ici</button>
 		</form>
-		<div style="height:500px; width:80%; border : 5px black groove; margin:auto" id="mapContainer">
+		<div style="height:500px; width:80%; border : solid 5px seagreen; margin:auto" id="mapContainer">
 		</div>
-	<body>
+	</body>
+</html>

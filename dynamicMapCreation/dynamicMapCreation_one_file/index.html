@@ -10,20 +10,11 @@
 		<!--- Loads Leaflet stylesheet and JS API and for the inclusion of an OSM Map -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css">
 		<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-		<!--Personnal CSS -->
-		<link rel="stylesheet" href="public/css/normalize.css">
-		<link rel="stylesheet" href="public/css/base.css">
-		<link rel="stylesheet" href="public/css/style.css">
-		<link rel="stylesheet" href="public/css/form.css">
-		<link rel="stylesheet" href="public/css/list.css">
-		<link rel="stylesheet" href="public/css/detail.css">
-		<!--Personnal scripts -->
-		<script src="utilities.js"></script>
-		<script src="geolocation.js"></script>
+		<script src="main.js"></script>
 	</head>
 
-<body>
-		<form>
+	<body>
+		<form method="post">
 			<label for="adress">Adresse</label>
 			<input name="adress" id="adress" type="text" placeholder="Tapez ici l'adresse recherchée" autofocus required >
 			<label for="postcode">Code postal</label>
@@ -32,4 +23,5 @@
 		</form>
 		<div style="height:500px; width:80%; border : 5px black groove; margin:auto" id="mapContainer">
 		</div>
-	<body>
+	</body>
+</html>
