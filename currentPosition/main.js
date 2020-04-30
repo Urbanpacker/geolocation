@@ -74,9 +74,9 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			urban.setGeoDataIntoForm();
 			urban.body.classList.remove('loading');
 		},
-
+*/
 		// In case of geolocation failure, writes the error message in place of the expected map
-		failGeo : function(error){
+		function failGeo(error){
 			let errorMessage ="";
 			switch(error.code){
 				case error.UNKNOWN_ERROR :
@@ -98,7 +98,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			urban.geolocErrorMessage(errorMessage);
 			urban.geolocationSuccess = false ;
 			urban.body.style.cursor = "initial";
-		},
+		}
 /*
 		getMemberPosition : function(currentPosition){
 			if(!currentPosition){
