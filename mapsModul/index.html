@@ -1,0 +1,31 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Essai map manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--- Loads Leaflet stylesheet and JS API and for the inclusion of an OSM Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+  
+  <style>form{display: flex; flex-flow: column nowrap; justify-content: space-between;}h1, input, label, button{ flex-flow : column wrap;  margin: 5px auto; font-size: 1.6rem;} </style>
+</head>
+<body>
+
+  <form>
+    <h1>Saisissez une adresse puis un code postal</h1>
+    <label for="adress">Adresse</label>
+    <input id="adress"/>
+    <label for="postcode">Code postal (5 chiffres)</label>
+    <input id="postcode"/>
+    <button id="newAdressButton" type="submit">Saisir une nouvelle adresse</button>
+  </form>
+  <div style="margin:auto; width:100%">
+    <div style="height:500px; width:2000px; margin:auto;	max-width:80%; border : solid 2px black;" id="mapContainer">
+    </div>
+  </div>
+  <script src="utilities.js"></script>
+  <script type="module" src="index.js"></script>
+</body>
+
+</html>
